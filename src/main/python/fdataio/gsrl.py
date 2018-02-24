@@ -29,14 +29,9 @@ def parseText(text):
 
         ll_patched = re.sub(r'(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)', r'"\1"', text)
 
-        print("ll_patched",ll_patched)
-        data = json.loads(ll_patched)
-        print("pages",data['pages'])
-        
 
-        print("data",data)
-        yaml.safe_dump(data['data'], sys.stdout, allow_unicode=True, default_flow_style=False)
-        print("len",len(data['data']))
+        data = json.loads(ll_patched)
+            
         return data['data']
 
 def getData(begindate,enddate):
@@ -105,30 +100,38 @@ def zjlx(page):
 "rt":"50596597"
 }
     ret = requests.get(url,params=req)
-    print("test1")
+
 #    ret = requests.get(url)
-    print(ret)
     text= ret.text   
-    print(text)
     return text
 
 def appendItem(alldata,item):
-        print("item",item)
-        print("alldata",alldata)
+
         alldata.extend(item)
         return alldata
 def f(x, y):
     return x + y
-def zjlxall():
+def zjlxall(page=70):
         pagev = [] 
-        for page in range(1,3):
-            text =zjlx(page)
+        for ipage in range(1,page):
+            print("page",ipage)
+            text =zjlx(ipage)
             data=parseText(text)
             pagev.append(data)
-        dataall=[]
 
-        reduce(appendItem,pagev,[])
+
+        dataall= reduce(appendItem,pagev,[])
         return dataall
+
+def zjlxquery(all,stockcode):
+        position = 0
+        for item in all:
+                subitemv = item.split(",")
+
+                if subitemv[1]==stockcode:
+                    return position
+                position=position+1
+        return position
 def zjlxsingle():
 #http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx?type=CT&cmd=6000501&sty=CTBFTA&st=z&sr=&p=&ps=&cb=&js=var%20tab_data=({data:[(x)]})&token=70f12f2f4f091e459a279469fe49eca5
     url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx'
@@ -239,7 +242,162 @@ def  gsrl2():
     print("data",data['data'])    
     print("test2")
     return data['data']
-     
+
+def cjrl():
+    url='http://data.eastmoney.com/DataCenter_V3/cjrl/getData.ashx'
+    req = {
+        "pagesize":50,
+"page":1,
+#"js":"var xhKTLNon",
+"js":"",
+"param":None,
+"sortRule":1,
+"sortType":"ConferenceDate",
+"code":None,
+"startDateTime":"2018-02-09",
+"endDateTime":"2018-03-09",
+"Type":"all",
+"rt":"50602630"
+}
+    ret = requests.get(url,params=req)
+    text= ret.text   
+    print(text)
+    data = json.loads(text)
+    print("data",data['data'])    
+    print("test2")
+    return data['data']
+ 
+def  zlpm(page=1):
+
+    url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx'
+    req  ={
+"type":"ct",
+"st":"(FFRank)",
+"sr":1,
+"p":page,
+"ps":50,
+#"js":"var lTLOsoyF={pages:(pc),data:[(x)]}",
+"js":"""{"pages":(pc),"data":[(x)]}""",
+"token":"894050c76af8597a853f5b408b759f5d",
+"cmd":"C._AB",
+"sty":"DCFFITAM",
+"rt":50645210,
+}
+   
+    ret = requests.get(url,params=req)
+    print("test1")
+#    ret = requests.get(url)
+    print(ret)
+    text= ret.text   
+    print(text)
+    data = json.loads(text)
+    print("data",data['data'])    
+    print("len",len(data['data']))
+    
+    return data['data']
+
+
+def zlpmall(page=70):
+        pagev = [] 
+        for ipage in range(1,page):
+            print("page",ipage)
+            data=zlpm(ipage)
+            pagev.append(data)
+
+
+        dataall= reduce(appendItem,pagev,[])
+        return dataall
+
+
+def  bkzj(page=1):
+
+    url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx'
+    req  = {"type":"CT",
+"cmd":"C._BKHY",
+"sty":"DCFFPBFM",
+"st":"(BalFlowMain)",
+"sr":-1,
+"p":1,
+"ps":999,
+"js":"""{"pages":(pc),"data":[(x)]}""",
+"token":"894050c76af8597a853f5b408b759f5d",
+"cb":"",
+"callback":"",
+#"cb":"callback07443355585841032",
+#"callback":"callback07443355585841032",
+
+"_":"1519363362310"
+}
+    ret = requests.get(url,params=req)
+    print("test1")
+#    ret = requests.get(url)
+    print(ret)
+    text= ret.text   
+    print(text)
+#    data = json.loads(text)
+#    print("data",data['data'])    
+#    print("len",len(data['data']))
+    
+#    return data['data']
+
+
+def  bkzj_gn(page=1):
+
+    url='http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx'
+    req  = {"type":"CT",
+"cmd":"C._BKGN",
+"sty":"DCFFPBFM",
+"st":"(BalFlowMain)",
+"sr":-1,
+"p":1,
+"ps":999,
+"js":"""{"pages":(pc),"data":[(x)]}""",
+"token":"894050c76af8597a853f5b408b759f5d",
+"cb":"",
+"callback":"",
+#"cb":"callback07443355585841032",
+#"callback":"callback07443355585841032",
+
+"_":"1519363362310"
+}
+    ret = requests.get(url,params=req)
+    print("test1")
+#    ret = requests.get(url)
+    print(ret)
+    text= ret.text   
+    print(text)
+#    data = json.loads(text)
+#    print("data",data['data'])    
+#    print("len",len(data['data']))
+    
+#    return data['data']
+
+def report():
+    url='http://datainterface.eastmoney.com//EM_DataCenter/js.aspx'
+    req  = {"type":"SR",
+"sty":"GGSR",
+#"js":"""var OZwCsBZo={"data":[(x)],"pages":"(pc)","update":"(ud)","count":"(count)"}""",
+"js":"""{"data":[(x)],"pages":"(pc)","update":"(ud)","count":"(count)"}""",
+"ps":50,
+"p":2,
+"mkt":0,
+"stat":0,
+"cmd":2,
+"code":"",
+"rt":50648006
+}
+    ret = requests.get(url,params=req)
+    print("test1")
+#    ret = requests.get(url)
+    print(ret)
+    text= ret.text   
+    print(text)
+    data = json.loads(text)
+    print("data",data['data'])    
+    print("len",len(data['data']))
+    
+    return data['data']
+
 def plot_curve1(data,title):
     plt.figure(figsize=(15,5))
     plt.title(title)
@@ -275,4 +433,5 @@ if __name__ == '__main__':
      print("yvalues",yvalues)
      plt.plot(df.iloc[:,0][-15:], yvalues,'ro')
      plt.show()
+     
      
