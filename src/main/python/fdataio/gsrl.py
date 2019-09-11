@@ -111,13 +111,22 @@ def appendItem(alldata,item):
         return alldata
 def f(x, y):
     return x + y
+def arraytodict(item):
+        fv = item.split(",")
+        count=0
+        newdict ={}
+        for item in fv:
+            newdict['k{0}'.format(count)]= item
+            count=count+1
+        return newdict
 def zjlxall(page=70):
         pagev = [] 
         for ipage in range(1,page):
             print("page",ipage)
             text =zjlx(ipage)
             data=parseText(text)
-            pagev.append(data)
+            newdictdata = map(lambda x:arraytodict(x),data)
+            pagev.append(newdictdata)
 
 
         dataall= reduce(appendItem,pagev,[])
@@ -129,6 +138,13 @@ def zjlxquery(all,stockcode):
                 subitemv = item.split(",")
 
                 if subitemv[1]==stockcode:
+                    return position
+                position=position+1
+        return position
+def zjlxquerydict(all,stockcode):
+        position = 0
+        for item in all:
+                if item['k1'] ==stockcode:
                     return position
                 position=position+1
         return position
@@ -297,10 +313,9 @@ def  zlpm(page=1):
     return data['data']
 
 
-def zlpmall(page=70):
+def zlpmall(page=60):
         pagev = [] 
         for ipage in range(1,page):
-            print("page",ipage)
             data=zlpm(ipage)
             pagev.append(data)
 
@@ -398,6 +413,26 @@ def report():
     
     return data['data']
 
+
+def xgsg():
+    url='http://dcfm.eastmoney.com/em_mutisvcexpandinterface/api/js/ge'
+    req  = {"type":"XGSG_LB",
+"token":"70f12f2f4f091e459a279469fe49eca5",
+"st":"purchasedate,securitycode",
+"sr":-1,
+"p":1,
+"ps":50,
+"js":"""var YYWarZYz={pages:(tp),data:(x)}""",
+"rt":50679839
+}
+    ret = requests.get(url,params=req)
+    print("test1")
+#    ret = requests.get(url)
+    print(ret)
+    text= ret.text   
+    print(text)
+
+
 def plot_curve1(data,title):
     plt.figure(figsize=(15,5))
     plt.title(title)
@@ -433,5 +468,5 @@ if __name__ == '__main__':
      print("yvalues",yvalues)
      plt.plot(df.iloc[:,0][-15:], yvalues,'ro')
      plt.show()
-     
+    
      

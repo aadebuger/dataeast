@@ -5,7 +5,7 @@ Created on 2018年2月23日
 '''
 import unittest
 
-from fdataio.gsrl import bkzj,bkzj_gn
+from fdataio.gsrl import bkzj,bkzj_gn 
 class Test(unittest.TestCase):
 
 
